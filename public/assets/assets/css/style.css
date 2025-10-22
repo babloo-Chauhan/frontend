@@ -1,0 +1,294 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+    --primary-color: #CD7834
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+body {
+    font-size: 15px;
+    line-height: 1.4;
+    color: #7A7A7A;
+    font-family: "Inter", sans-serif;
+    font-weight: 300;
+}
+
+@media(min-width:992px) {
+    .container-fluid {
+        padding: 0 3rem;
+    }
+}
+
+.ptb {
+    padding: 80px 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Tinos", serif;
+}
+
+.heading-2 {
+    color: #000;
+    font-family: "Tinos", serif;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    padding-bottom: 1.5rem;
+}
+
+/* ========== */
+
+.main-banner .nav-tabs .nav-link {
+    border: none;
+    color: #000;
+    padding-bottom: 5px;
+    font-size: 14px;
+}
+
+.main-banner .nav-tabs .nav-link.active {
+    color: #a66341;
+    border: none;
+    position: relative;
+}
+
+.main-banner .nav-tabs .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #a66341;
+    border-radius: 2px;
+}
+
+/* Search container */
+.main-banner .search-container {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+
+}
+
+.main-banner .search-container input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    border-radius: 8.396px;
+    background: #F7F7F7;
+    padding: 16px 40px;
+    margin-right: 16px;
+    color: #6C757D;
+    font-weight: 400;
+}
+
+.main-banner .search-container input::placeholder {
+    color: #6C757D;
+}
+
+.main-banner .search-container button {
+    background: #a66341 !important;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff !important;
+}
+
+.main-banner .search-container button svg {
+    fill: white;
+    width: 18px;
+    height: 18px;
+}
+
+.main-banner .content h1 {
+    color: #BF7A56;
+    text-align: center;
+    font-family: "Tinos", serif;
+    font-size: 60px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.main-banner {
+    padding: 100px 0;
+}
+
+.main-banner .nav-tabs {
+    background: #fff;
+    width: 40%;
+    margin-top: 30px;
+    border-radius: 12.594px 12.594px 0 0;
+    padding: 6px 12px;
+    border-bottom: 0;
+}
+
+.main-banner .search-box {
+    border-radius: 0 12.594px 12.594px 12.594px;
+    background: #FFF;
+    padding: 16px;
+}
+
+/* category-section */
+.heading-3 {
+    color: var(--primary-color);
+    font-size: 24px;
+    font-weight: 400;
+    position: relative;
+    margin-bottom: 14px;
+}
+
+.category-section .box h3::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 70%;
+    height: 2px;
+    background: linear-gradient(90deg, #CD7834 0%, rgba(205, 120, 52, 0) 100%);
+    height: 1px;
+}
+
+.category-section .image {
+    overflow: hidden;
+    object-fit: cover;
+    margin-bottom: 16px;
+}
+
+.venue-img {
+    position: relative;
+}
+
+.venue-img img {
+    width: 100%;
+    display: block;
+    border-radius: 10px 10px 0 0;
+}
+
+.rating-badge {
+    position: absolute;
+    top: 12px;
+    right: -8px;
+    background: url(./images/background/rating-badge.png) no-repeat center;
+    background-size: 100%;
+    width: 80px;
+    height: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: white;
+    font-weight: 400;
+}
+
+.rating-badge p {
+    margin-bottom: 0;
+    margin-top: -8px;
+}
+
+.venue-heading {
+    border-radius: 0 63px 0 0;
+    background: #FFF;
+    display: inline-block;
+    position: absolute;
+    bottom: 0;
+    padding: 8px 33px 0px 11px;
+}
+
+.venue-heading h3 {
+    margin-bottom: 0;
+    font-size: 20px;
+}
+
+.venue-content {
+    background-color: #fff;
+    padding: 15px;
+    position: relative;
+    border-radius: 0 0px 10px 10px;
+}
+
+.venue-location {
+    color: #7A7A7A;
+    margin: 5px 0;
+}
+
+.venue-location i {
+    color: #a94f19;
+    /* icon color */
+    margin-right: 6px;
+}
+
+.venue-details {
+    color: #7A7A7A;
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.venue-details i {
+    color: #a94f19;
+    margin-right: 5px;
+}
+
+@media(min-width:992px) {
+    .category-section .image {
+        height: 265px;
+    }
+}
+
+@media(max-width:992px) {
+    .main-banner .content h1 {
+        font-size: 40px;
+    }
+
+    .story-section-1 .row {
+        flex-direction: column-reverse;
+    }
+
+    .ptb {
+        padding: 40px 0;
+    }
+
+    .heading-3 {
+        font-size: 20px;
+    }
+
+    body {
+        font-size: 13px;
+    }
+
+    .venue-heading h3 {
+        font-size: 16px;
+    }
+
+    .venue-content {
+        padding: 2px 10px;
+    }
+}
+
+@media(max-width:768px) {
+
+    .main-banner .nav-tabs,
+    .main-banner .search-container input {
+        width: 100%
+    }
+}
