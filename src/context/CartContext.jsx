@@ -90,6 +90,11 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+   const clearCart = () => {
+    setCart([]); // ✅ instantly clear
+    localStorage.removeItem("cart"); // optional
+  };
+
   const updateCartQty = async (item, qty) => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -179,6 +184,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         addToCartFromSingleProduct,
         getToCart,
+        clearCart,
         updateCartQty,
         subtotal,
         setsubtotal,

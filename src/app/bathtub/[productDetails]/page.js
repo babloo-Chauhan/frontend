@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
-import { getProducts } from "@/context/ProductApi";
+import { getProduct, getProducts } from "@/context/ProductApi";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import { useRouter, useSearchParams } from "next/navigation";
+import Cookies from "js-cookie";
 import {
   MdShoppingCart,
   MdFavorite,
@@ -35,9 +36,7 @@ const SingleProduct = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(
-          `https://api.kazoma.co.in/api/products/${id}`
-        );
+        const res = await getProduct(id);
         setItem(res.data);
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -45,6 +44,8 @@ const SingleProduct = () => {
     };
     if (id) fetchProduct();
   }, [id]);
+
+  console.log("fff :",item)
 
   // ✅ Initialize selections when product is fetched
   useEffect(() => {
@@ -87,19 +88,31 @@ const SingleProduct = () => {
   const handleDecrement = () => setProductQuantity((q) => (q > 1 ? q - 1 : 1));
 
   // ✅ Add to Cart
-  const handleAddToCart = () => {
-    if (!selectedSize || !selectedPrice) {
-      toast.error("Please select a size first.");
-      return;
-    }
-    addToCart({
-      ...item,
-      size: selectedSize,
-      price: selectedPrice,
-      quantity: productQuantity,
-    });
-    toast.success("Item added to cart!");
-  };
+const handleAddToCart = () => {
+  // 🔐 Check if user is logged in
+  const token =
+    Cookies.get("accessToken") || localStorage.getItem("accessToken");
+
+  if (!token) {
+    toast.error("Please login to add items to cart!");
+    router.push("/login"); // 👈 redirect to login
+    return;
+  }
+
+  if (!selectedSize || !selectedPrice) {
+    toast.error("Please select a size first.");
+    return;
+  }
+
+  addToCart({
+    ...item,
+    size: selectedSize,
+    price: selectedPrice,
+    quantity: productQuantity,
+  });
+
+  toast.success("Item added to cart!");
+};
 
   // ✅ Buy Now
   const handleBuyNow = (product) => {

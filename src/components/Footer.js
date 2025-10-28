@@ -146,11 +146,12 @@ const Footer = () => {
               </p>
             </div>
             <p className="text-sm text-gray-200">
-              Khasra No. 26/11/1 Ground Floor, Near R.B.M School, Village
-              Bakkarwala, New Delhi-110041
+              cafrox Industries Private Limited, Office No. One , AT, F-1,
+              Adhyapak Nagar, Kunwar Singh Nagar, Nangloi, New Delhi, Delhi
+              110041
             </p>
             <a
-              href="mailto:info@kazoma.co.in"
+              href="mailto:info@cafrox.com"
               className="text-blue-300 hover:text-blue-200 font-semibold transition-colors block"
               rel="noopener noreferrer"
             >
@@ -254,11 +255,11 @@ const Footer = () => {
             <div className="text-sm text-gray-300">
               Copyright © {new Date().getFullYear()}{" "}
               <a
-                href="https://www.kazoma.co.in"
+                href="https://www.cafrox.com"
                 className="text-blue-300 hover:text-blue-200 font-semibold transition-colors"
                 rel="noopener noreferrer"
               >
-                www.kazoma.co.in
+                www.cafrox.com
               </a>
             </div>
             <div className="flex items-center gap-4">
@@ -303,7 +304,7 @@ const Footer = () => {
       <div className="floating_btn fixed bottom-24 right-4 z-50">
         <a href="https://wa.me/+918416800849">
           <div className="contact_icon">
-           <FaWhatsapp/>
+            <FaWhatsapp />
           </div>
         </a>
       </div>

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
-
+import Cookies from "js-cookie";
 import { MdFilterList, MdSearch, MdShoppingCart } from "react-icons/md";
 import { FaWhatsapp } from "react-icons/fa";
 import { toast } from "react-hot-toast";
@@ -28,6 +28,15 @@ const Product = () => {
   const { addToCart } = useCart();
   const router = useRouter();
 
+   // ✅ Route protection
+   useEffect(() => {
+     const token =
+       Cookies.get("accessToken") || localStorage.getItem("accessToken");
+     if (!token) {
+       toast.error("Please login first!");
+       router.push("/login");
+     }
+   }, [router]);
   // Fetch subcategories
   useEffect(() => {
     const fetchSubCategories = async () => {

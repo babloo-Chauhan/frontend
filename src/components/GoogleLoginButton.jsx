@@ -11,7 +11,7 @@ const GoogleLoginButton = ({ isSignup = false }) => {
         localStorage.removeItem('user');
 
         // Redirect to Google auth
-        window.location.href = "https://api.kazoma.co.in/auth/google";
+        window.location.href = "http://localhost:3002/auth/google";
     };
 
     return (

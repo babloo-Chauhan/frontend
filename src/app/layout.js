@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Kazoma Private Limited",
-  description: "Luxury Bathware Collection – Powered by Kazoma",
+  title: "cafrox Private Limited",
+  description: "Luxury Bathware Collection – Powered by cafrox",
 };
 
 export default function RootLayout({ children }) {
@@ -40,18 +40,11 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
-        />
+  
       </head>
 
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-blue-900`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}
         cz-shortcut-listen="true"
       >
         <ApiProvider>
@@ -64,10 +57,11 @@ export default function RootLayout({ children }) {
         </ApiProvider>
 
         {/* ✅ Google Maps Script (Better at the End for Performance) */}
-        <Script
+        <script
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7x-OR8sGvY809feuXyImQg6kDnkLlv2E&libraries=places"
-          strategy="afterInteractive"
-        />
+          async
+          defer
+        ></script>
       </body>
     </html>
   );

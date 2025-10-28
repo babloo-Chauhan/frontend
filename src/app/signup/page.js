@@ -1,12 +1,12 @@
-"use client"
+"use client";
+
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
+import cafroximg from '../../../public/cafrox-main.png'
 import {
   Card,
-  CardHeader,
   CardBody,
-  CardFooter,
   Typography,
   Input,
   Checkbox,
@@ -15,9 +15,11 @@ import {
 import { registerUser } from "@/context/UserContext";
 import Link from "next/link";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const Signup = () => {
-
+  const router = useRouter();
   const [data, setData] = useState({
     name: "",
     mobile: "",
@@ -28,7 +30,7 @@ const Signup = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
-  // ✅ Form Validation
+  // ✅ Validation
   const validateForm = () => {
     const newErrors = {};
 
@@ -52,28 +54,45 @@ const Signup = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ Form Submit
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  // ✅ Handle Form Submit
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setLoading(true);
-    try {
-      const res = await registerUser(data);
-      if (res.success) {
-        toast.success("Registration successful! Redirecting...");
-        setTimeout(() => navigate("/login"), 1500);
-      } else toast.error(res.message);
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Registration failed. Try again."
-      );
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  try {
+    const res = await registerUser(data);
+
+    if (res.success) {
+      const userData = res.data;
+
+      // ✅ Store tokens (if returned)
+      if (userData.accessToken) {
+        localStorage.setItem("accessToken", userData.accessToken);
+        localStorage.setItem("refreshToken", userData.refreshToken);
+        localStorage.setItem("role", userData.role);
+        localStorage.setItem("user", JSON.stringify(userData));
+
+        // ✅ Notify app (Header, etc.) instantly
+        window.dispatchEvent(new Event("authChange"));
+      }
+
+      toast.success("Registration successful! please login");
+      setTimeout(() => router.push("/login"), 1200);
+    } else {
+      toast.error(res.message || "Registration failed");
     }
-  };
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message || "Registration failed. Try again."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
-  // ✅ Handle Inputs
+
+  // ✅ Handle Input Change
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setData((prev) => ({
@@ -85,48 +104,66 @@ const Signup = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-100 to-blue-100 px-4 py-10"
+    <div
+      className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-cover bg-center relative"
+      style={{
+        backgroundImage: "url(/cafrox-main.png)",
+      }}
     >
+      {/* LEFT SECTION — Cafrox Main Image */}
       <motion.div
-        whileHover={{ scale: 1.02 }}
-        transition={{ duration: 0.3 }}
-        className="w-full max-w-md"
+        initial={{ x: -50, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.7 }}
+        className="relative z-10 w-full md:w-1/2 h-[400px] md:h-screen flex items-center justify-center p-8"
       >
-        <form onSubmit={handleSubmit}>
-          <Card className="shadow-2xl rounded-2xl border border-gray-100 backdrop-blur-xl bg-white/90">
-            {/* Header */}
-            <CardHeader
-              floated={false}
-              shadow={false}
-              color="indigo"
-              variant="gradient"
-              className="grid h-28 place-items-center rounded-t-2xl"
+        <div className="relative w-full max-w-lg rounded-3xl overflow-hidden">
+          <Image
+            src={cafroximg}
+            alt="Cafrox Premium Bathtubs"
+            width={800}
+            height={800}
+            className="object-cover w-full h-full"
+          />
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <Typography
+              variant="h2"
+              className="text-white font-bold tracking-wide text-center"
             >
-              <Typography
-                variant="h3"
-                color="white"
-                className="font-bold tracking-wide"
-              >
-                Create Account
-              </Typography>
-            </CardHeader>
+              Welcome to <span className="text-blue-300">Cafrox</span>
+            </Typography>
+          </div>
+        </div>
+      </motion.div>
 
-            {/* Body */}
-            <CardBody className="flex flex-col gap-5 p-6">
-              {/* Name */}
+      {/* RIGHT SECTION — Signup Form */}
+      <motion.div
+        initial={{ x: 50, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.7 }}
+        className="relative z-10 w-full md:w-1/2 flex items-center justify-center p-6"
+      >
+        <Card className="backdrop-blur-xl bg-white/10 border border-white/30 rounded-2xl w-full max-w-md">
+          <CardBody className="p-8 text-white">
+            <div className="text-center mb-8">
+              <Typography variant="h3" className="font-bold text-white">
+                Create Your <span className="text-blue-300">Cafrox</span>{" "}
+                Account
+              </Typography>
+              <Typography variant="small" className="text-gray-200 mt-2">
+                Join us and explore our luxury bathtubs
+              </Typography>
+            </div>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
               <Input
                 name="name"
                 label="Full Name"
                 size="lg"
+                color="white"
                 value={data.name}
                 onChange={handleInputChange}
-                className={`focus:border-indigo-500 ${
-                  errors.name ? "border-red-500" : ""
-                }`}
+                className="text-white placeholder-gray-300 !border-t-white"
               />
               {errors.name && (
                 <Typography variant="small" color="red">
@@ -134,16 +171,14 @@ const Signup = () => {
                 </Typography>
               )}
 
-              {/* Mobile */}
               <Input
                 name="mobile"
                 label="Phone Number"
                 size="lg"
+                color="white"
                 value={data.mobile}
                 onChange={handleInputChange}
-                className={`focus:border-indigo-500 ${
-                  errors.mobile ? "border-red-500" : ""
-                }`}
+                className="text-white placeholder-gray-300"
               />
               {errors.mobile && (
                 <Typography variant="small" color="red">
@@ -151,17 +186,15 @@ const Signup = () => {
                 </Typography>
               )}
 
-              {/* Email */}
               <Input
                 name="email"
                 label="Email"
                 size="lg"
                 type="email"
+                color="white"
                 value={data.email}
                 onChange={handleInputChange}
-                className={`focus:border-indigo-500 ${
-                  errors.email ? "border-red-500" : ""
-                }`}
+                className="text-white placeholder-gray-300"
               />
               {errors.email && (
                 <Typography variant="small" color="red">
@@ -169,17 +202,15 @@ const Signup = () => {
                 </Typography>
               )}
 
-              {/* Password */}
               <Input
                 name="password"
                 label="Password"
                 size="lg"
                 type="password"
+                color="white"
                 value={data.password}
                 onChange={handleInputChange}
-                className={`focus:border-indigo-500 ${
-                  errors.password ? "border-red-500" : ""
-                }`}
+                className="text-white placeholder-gray-300"
               />
               {errors.password && (
                 <Typography variant="small" color="red">
@@ -187,62 +218,62 @@ const Signup = () => {
                 </Typography>
               )}
 
-              {/* Remember Me */}
               <Checkbox
                 name="rememberMe"
-                label="Remember Me"
+                label={<span className="text-gray-200">Remember Me</span>}
                 checked={data.rememberMe}
                 onChange={handleInputChange}
-                color="indigo"
+                color="blue"
               />
-            </CardBody>
 
-            {/* Footer */}
-            <CardFooter className="p-6 pt-0">
               <Button
                 type="submit"
                 variant="gradient"
                 color="indigo"
                 fullWidth
                 disabled={loading}
-                className="h-12 text-base font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                className="h-12 text-lg font-semibold rounded-xl"
               >
                 {loading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></div>
                     Signing Up...
                   </div>
                 ) : (
                   "Sign Up"
                 )}
               </Button>
+            </form>
 
-              {/* Divider */}
-              <div className="relative flex items-center justify-center my-5">
-                <div className="w-full border-t border-gray-300"></div>
-                <span className="absolute bg-white/90 px-3 text-gray-500 text-sm">
-                  OR
-                </span>
-              </div>
+            <div className="relative flex items-center justify-center my-6">
+              <div className="w-full border-t border-gray-400"></div>
+              <span className="bg-transparent px-2 text-gray-300 text-sm">
+                OR
+              </span>
+              <div className="w-full border-t border-gray-400"></div>
+            </div>
 
-              {/* Google Login */}
-              <GoogleLoginButton isSignup={true} />
+            <GoogleLoginButton isSignup={true} />
 
-              {/* Footer Link */}
-              <Typography variant="small" className="mt-6 text-center">
-                Already have an account?{" "}
-                <Link
-                  href="/login"
-                  className="font-semibold text-indigo-600 hover:text-indigo-800 transition-colors"
+            <Typography
+              variant="small"
+              className="mt-6 flex justify-center text-gray-200"
+            >
+              Already have an account?
+              <Link href="/login">
+                <motion.span
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="ml-1 font-bold text-blue-300 hover:text-white cursor-pointer"
                 >
-                  Log In
-                </Link>
-              </Typography>
-            </CardFooter>
-          </Card>
-        </form>
+                  Login
+                </motion.span>
+              </Link>
+            </Typography>
+          </CardBody>
+        </Card>
       </motion.div>
-    </motion.div>
+    </div>
   );
 };
 

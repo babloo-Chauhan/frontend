@@ -37,7 +37,9 @@ const categories = [
 
 export default function CategorySection() {
     return (
-        <section id="categories" className="py-20 bg-white text-center">
+        <section id="categories" className="py-20 bg-white text-center" style={{
+            backgroundImage: "url(/assets/images/wedding-venue-body-bg.webp)",
+        }}>
             <motion.h2
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}

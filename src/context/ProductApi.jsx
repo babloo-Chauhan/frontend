@@ -49,12 +49,20 @@ export const addProduct = async (product) => {
 
 export const getProducts = async () => {
     console.log("baseUrl", baseUrl);
-    return await axios.get(baseUrl);
+    const res= await axios.get(baseUrl);
+  
+    return res
 };
 
 export const getProduct = async (id) => {
-    return await axios.get(`${baseUrl}/${id}`);
+    
+    const res= await axios.get(`${baseUrl}/${id}`);
+
+    console.log("iddata :", res)
+    return res
 };
+
+
 
 export const updateProduct = async (product) => {
     console.log("update" , product)
@@ -81,6 +89,7 @@ export const deleteProduct = async (_id) => {
     });
     }
 };
+
 
 export const searchProduct = async (query) => {
     return await axios.post(`${baseUrl}/search-product`, { searchText: query });

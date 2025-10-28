@@ -1,201 +1,199 @@
-"use client"
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { toast } from "react-hot-toast";
+"use client";
 
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "react-hot-toast";
+import cafroximg from '../../../public/cafrox-main.png'
 import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   Typography,
   Input,
-  Checkbox,
   Button,
+  Card,
+  CardBody,
 } from "@material-tailwind/react";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { loginuser, forgotPassword } from "@/context/UserContext";
-
-import { FaTimes } from "react-icons/fa";
-import { AnimatePresence } from "framer-motion";
-import GoogleLoginButton from "@/components/GoogleLoginButton";
 import { useRouter } from "next/navigation";
+import { FaTimes } from "react-icons/fa";
+import { loginuser, forgotPassword } from "@/context/UserContext";
+import GoogleLoginButton from "@/components/GoogleLoginButton";
 import { useApi } from "@/context/ApiContext";
+import Image from "next/image";
 
-
-
-const Login = () => {
+export default function Login() {
   const router = useRouter();
-  const {usertoken,setusertoken}=useApi();
-  
+  const { setusertoken } = useApi();
+
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
-  const [data, setData] = useState({
-    email: "",
-    password: "",
-    rememberMe: false,
-  });
+  const [data, setData] = useState({ email: "", password: "" });
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
+const handleSubmit = async (event) => {
+  event.preventDefault();
+  setLoading(true);
 
-    console.log(1);
-    try {
-      const response = await loginuser(data);
-      console.log("response", response);
-      console.log(2);
-      // const result = await response.json();
-      // console.log("result", result)
+  try {
+    const response = await loginuser(data);
+    if (response.status === 200) {
+      const userData = response.data.data;
 
-      if (response.status === 200) {
-        console.log(response.data.data);
-        localStorage.setItem("accessToken", response.data.data.accesstoken);
-        localStorage.setItem("role", response.data.data.userDetails.role);
-        setusertoken(response.data.data.accesstoken);
-        localStorage.setItem("refreshToken", response.data.data.refreshToken);
-        Cookies.set("accessToken",response.data.data.accessToken);
-        toast.success("Login successful!");
+      // ✅ Store tokens
+      localStorage.setItem("accessToken", userData.accesstoken);
+      localStorage.setItem("refreshToken", userData.refreshToken);
+      localStorage.setItem("role", userData.userDetails.role);
 
-        router.push("/");
-      } else {
-        toast.error(result.message || "Login failed");
-      }
-    } catch (error) {
-      toast.error("An error occurred during login");
-    } finally {
-      setLoading(false);
+      Cookies.set("accessToken", userData.accesstoken);
+      setusertoken(userData.accesstoken);
+
+      // ✅ 🔔 Notify other components (like Header)
+      window.dispatchEvent(new Event("authChange"));
+
+      toast.success("Login successful!");
+      router.push("/");
+    } else {
+      toast.error(response?.data?.message || "Login failed");
     }
-  };
+  } catch (error) {
+    toast.error("An error occurred during login");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleForgotPassword = async (e) => {
-    e.preventDefault();
-    if (!forgotPasswordEmail) {
-      toast.error("Please enter your email address");
-      return;
-    }
-
-    setForgotPasswordLoading(true);
-    try {
-      const response = await forgotPassword(forgotPasswordEmail);
-      toast.success("Password reset instructions sent to your email");
-      setShowForgotPassword(false);
-      setForgotPasswordEmail("");
-      navigate("/verify-otp", { state: { email: forgotPasswordEmail } });
-    } catch (error) {
-      console.error("Error during forgot password:", error);
-      toast.error(
-        error.response?.data?.message ||
-          "Failed to process forgot password request"
-      );
-    } finally {
-      setForgotPasswordLoading(false);
-    }
+    setData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
-    <>
+    <div
+      className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-cover bg-center"
+      style={{
+        backgroundImage: "url(/cafrox-main.png)",
+      }}
+    >
+      <div className="absolute inset-0"></div>
+
+      {/* LEFT SECTION — Company Image */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8"
+        initial={{ x: -50, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.7 }}
+        className="relative z-10 w-full md:w-1/2 h-[400px] md:h-screen flex items-center justify-center p-8"
       >
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.3 }}
-          className="w-full max-w-md"
-        >
-          <form onSubmit={handleSubmit}>
-            <Card className="shadow-xl border border-gray-100">
-              <CardHeader
+        <div className="relative w-full max-w-lg rounded-3xl overflow-hidden ">
+          <Image
+            src={cafroximg} // your main image path
+            alt="Cafrox Luxury Bathtubs"
+            width={800}
+            height={800}
+            className="object-cover w-full h-full"
+          />
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <Typography
+              variant="h2"
+              className="text-white font-bold tracking-wide drop-shadow-lg text-center"
+            >
+              Welcome to <span className="text-blue-300">Cafrox</span>
+            </Typography>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* RIGHT SECTION — Login Form */}
+      <motion.div
+        initial={{ x: 50, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.7 }}
+        className="relative z-10 w-full md:w-1/2 flex items-center justify-center p-6"
+      >
+        <Card className="backdrop-blur-lg bg-white/20 border border-white/30 shadow-2xl rounded-2xl w-full max-w-md">
+          <CardBody className="p-8 text-white">
+            <div className="text-center mb-8">
+              <Typography
+                variant="h3"
+                className="font-bold text-white drop-shadow-lg"
+              >
+                Login to <span className="text-blue-300">Cafrox</span>
+              </Typography>
+              <Typography variant="small" className="text-gray-200 mt-2">
+                Access your account to explore premium bathtubs
+              </Typography>
+            </div>
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              <Input
+                name="email"
+                label="Email"
+                size="lg"
+                type="email"
+                color="white"
+                value={data.email}
+                onChange={handleInputChange}
+                required
+                className="text-white placeholder-gray-300"
+              />
+              <Input
+                name="password"
+                label="Password"
+                size="lg"
+                type="password"
+                color="white"
+                value={data.password}
+                onChange={handleInputChange}
+                required
+                className="text-white placeholder-gray-300"
+              />
+
+              <Button
+                type="submit"
                 variant="gradient"
                 color="indigo"
-                className="mb-4 grid h-28 place-items-center"
+                fullWidth
+                disabled={loading}
+                className="h-12 text-lg font-semibold rounded-xl shadow-md"
               >
-                <Typography variant="h3" color="white" className="font-bold">
-                  Login
-                </Typography>
-              </CardHeader>
-              <CardBody className="flex flex-col gap-4 p-6">
-                <Input
-                  name="email"
-                  label="Email"
-                  size="lg"
-                  type="email"
-                  value={data.email}
-                  onChange={handleInputChange}
-                  required
-                />
-                <Input
-                  name="password"
-                  label="Password"
-                  size="lg"
-                  type="password"
-                  value={data.password}
-                  onChange={handleInputChange}
-                  required
-                />
-              </CardBody>
-              <CardFooter className="pt-0 p-6">
-                <Button
-                  type="submit"
-                  variant="gradient"
-                  fullWidth
-                  color="indigo"
-                  disabled={loading}
-                  className="h-12 mb-4"
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></div>
+                    Logging in...
+                  </div>
+                ) : (
+                  "Login"
+                )}
+              </Button>
+            </form>
+
+            <div className="relative flex items-center justify-center my-6">
+              <div className="w-full border-t border-gray-400"></div>
+              <span className="bg-transparent px-2 text-gray-300 text-sm">
+                OR
+              </span>
+              <div className="w-full border-t border-gray-400"></div>
+            </div>
+
+            <GoogleLoginButton />
+
+            <Typography
+              variant="small"
+              className="mt-6 flex justify-center text-gray-200"
+            >
+              Don’t have an account?
+              <Link href="/signup">
+                <motion.span
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="ml-1 font-bold text-blue-300 hover:text-white cursor-pointer"
                 >
-                  {loading ? (
-                    <div className="flex items-center justify-center">
-                      <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></div>
-                      Logging in...
-                    </div>
-                  ) : (
-                    "Login"
-                  )}
-                </Button>
-
-                <div className="relative flex items-center justify-center mb-4">
-                  <div className="w-full border-t border-gray-300"></div>
-                  <span className="bg-white px-2 text-gray-500 text-sm">
-                    OR
-                  </span>
-                  <div className="w-full border-t border-gray-300"></div>
-                </div>
-
-                <GoogleLoginButton />
-
-                <Typography
-                  variant="small"
-                  className="mt-6 flex justify-center"
-                >
-                  Don't have an account?
-                  <Link href="/signup">
-                    <motion.span
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="ml-1 font-bold text-indigo-600 hover:text-indigo-800 cursor-pointer"
-                    >
-                      Sign Up
-                    </motion.span>
-                  </Link>
-                </Typography>
-              </CardFooter>
-            </Card>
-          </form>
-        </motion.div>
+                  Sign Up
+                </motion.span>
+              </Link>
+            </Typography>
+          </CardBody>
+        </Card>
       </motion.div>
 
       {/* Forgot Password Modal */}
@@ -205,7 +203,7 @@ const Login = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -227,7 +225,7 @@ const Login = () => {
                   <FaTimes />
                 </button>
               </div>
-              <form onSubmit={handleForgotPassword}>
+              <form>
                 <div className="mb-6">
                   <Input
                     label="Email"
@@ -238,35 +236,21 @@ const Login = () => {
                     className="focus:border-indigo-500"
                   />
                 </div>
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                <Button
+                  variant="gradient"
+                  fullWidth
+                  type="submit"
+                  color="indigo"
+                  disabled={forgotPasswordLoading}
+                  className="h-12"
                 >
-                  <Button
-                    variant="gradient"
-                    fullWidth
-                    type="submit"
-                    color="indigo"
-                    disabled={forgotPasswordLoading}
-                    className="h-12"
-                  >
-                    {forgotPasswordLoading ? (
-                      <div className="flex items-center justify-center">
-                        <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></div>
-                        Sending...
-                      </div>
-                    ) : (
-                      "Send Reset Link"
-                    )}
-                  </Button>
-                </motion.div>
+                  {forgotPasswordLoading ? "Sending..." : "Send Reset Link"}
+                </Button>
               </form>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
-};
-
-export default Login;
+}

@@ -35,9 +35,12 @@ import {
 } from "@material-tailwind/react";
 import { useRouter } from "next/navigation";
 import { useApi } from "@/context/ApiContext";
+import {useCart } from "@/context/CartContext";
+
 
 const Account = () => {
   const router = useRouter();
+  const { clearCart} = useCart();
   const { setusertoken } = useApi();
   const [activeTab, setActiveTab] = useState("Profile");
   const [userDetails, setUserDetails] = useState({});
@@ -68,26 +71,42 @@ const Account = () => {
   ];
 
   // Logout
-  const logout = () => {
-    try {
-      localStorage.clear();
-      setusertoken("");
-      Cookies.remove("accessToken");
-      Cookies.remove("refreshToken");
-      Cookies.remove("role");
-      document.cookie.split(";").forEach((cookie) => {
-        const eqPos = cookie.indexOf("=");
-        const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-        document.cookie =
-          name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-      });
-      toast.success("Logged out successfully!");
-      router.push("/login");
-    } catch (error) {
-      console.error("Logout error:", error);
-      toast.error("Something went wrong during logout");
-    }
-  };
+const logout = () => {
+  try {
+    // ✅ Clear localStorage completely
+    localStorage.clear();
+
+    // ✅ Clear session storage (in case tokens or temp data are stored there)
+    sessionStorage.clear();
+
+    // ✅ Clear specific cookies
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
+    Cookies.remove("role");
+
+    // ✅ Force-remove any remaining cookies manually (extra safety)
+    document.cookie.split(";").forEach((cookie) => {
+      const eqPos = cookie.indexOf("=");
+      const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+    });
+
+    // ✅ Clear API token or context value
+    if (typeof setusertoken === "function") setusertoken("");
+
+    clearCart();
+
+    // ✅ Trigger global update for Header (authChange listener)
+    window.dispatchEvent(new Event("authChange"));
+
+    // ✅ Feedback and redirect
+    toast.success("Logged out successfully!");
+    router.push("/login");
+  } catch (error) {
+    console.error("Logout error:", error);
+    toast.error("Something went wrong during logout");
+  }
+};
 
   // Address handling
   const handleAddressSubmit = async (e) => {

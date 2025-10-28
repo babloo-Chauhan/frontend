@@ -1,5 +1,8 @@
 "use client";
+import Image from "next/image";
+import googleimg from '../../../public/google.svg'
 import React, { useEffect, useState } from "react";
+
 
 export default function GoogleReviews() {
     const [reviews, setReviews] = useState([]);
@@ -8,7 +11,7 @@ export default function GoogleReviews() {
     const [avgRating, setAvgRating] = useState(0);
     const [loading, setLoading] = useState(true);
 
-    const placeId = "ChIJT8th50wFDTkR2PWSfnlIQPA";
+    const placeId = "ChIJ55yNAUEFDTkR--zb1Z2YXJw";
 
     useEffect(() => {
         const loadReviews = () => {
@@ -54,7 +57,9 @@ export default function GoogleReviews() {
     }, []);
 
     return (
-        <div className="bg-white text-black py-10 px-4 sm:px-8 lg:px-16">
+        <div className=" text-black py-10 px-4 sm:px-8 lg:px-16" style={{
+            backgroundImage: "url(/assets/images/wedding-venue-body-bg.webp)",
+        }}>
             <h2 className="text-3xl sm:text-4xl font-bold text-center mb-10">
                 What People Say
             </h2>
@@ -66,7 +71,8 @@ export default function GoogleReviews() {
                     {/* LEFT COLUMN — Business Info */}
                     <div className="col-span-2 md:col-span-1 bg-gray-50 p-6 rounded-2xl shadow-md flex flex-col items-center justify-center text-center">
                         <img
-                            src={`https://maps.googleapis.com/maps/api/staticmap?center=Kazoma%20Industries%20Pvt%20Ltd,Delhi&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:K%7C28.666,77.067&key=AIzaSyD7x-OR8sGvY809feuXyImQg6kDnkLlv2E`}
+                                src={`https://maps.googleapis.com/maps/api/staticmap?center=Cafrox%20Industries%20Private%20Limited,Delhi&zoom=15&size=200x200&maptype=roadmap&markers=color:red%7Clabel:C%7C28.666,77.067&key=AIzaSyD7x-OR8sGvY809feuXyImQg6kDnkLlv2E`}
+
                             alt="Map"
                             className="w-28 h-28 mb-3 rounded-lg shadow-md"
                         />
@@ -119,9 +125,11 @@ export default function GoogleReviews() {
                                             </p>
                                         </div>
                                     </div>
-                                    <img
-                                        src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                                    <Image
+                                        src={googleimg}
                                         alt="Google"
+                                        width={20}
+                                        height={20}
                                         className="w-5 h-5"
                                     />
                                 </div>
